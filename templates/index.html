@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediksi Magnitude Gempa</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .hero {
+            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+            color: #fff;
+            border-radius: 0;
+            padding: 60px 0 40px 0;
+            text-align: center;
+        }
+        .hero-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        }
+        .hero-icon i {
+            font-size: 3rem;
+            color: #6366f1;
+        }
+        .fitur-card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            transition: transform 0.2s;
+        }
+        .fitur-card:hover {
+            transform: translateY(-6px) scale(1.03);
+        }
+        .fitur-icon {
+            font-size: 2.5rem;
+            color: #3b82f6;
+            margin-bottom: 10px;
+        }
+        .nav-btn {
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body style="font-family: 'Poppins', sans-serif; background: #f4f6fa;">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">Prediksi Magnitude Gempa</a>
+            <div class="d-flex">
+                <a href="/aplikasi" class="btn btn-primary nav-btn"><i class="bi bi-cpu"></i> Aplikasi</a>
+                <a href="/analisis" class="btn btn-outline-primary nav-btn"><i class="bi bi-bar-chart"></i> Analisis</a>
+            </div>
+        </div>
+    </nav>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-icon mb-3">
+                <i class="bi bi-activity"></i>
+            </div>
+            <h1 class="display-5 fw-bold mb-3">Aplikasi Prediksi Magnitude Gempa</h1>
+            <p class="lead mb-4">Prediksi kategori magnitude gempa bumi (kecil, sedang, besar) berbasis data historis. Mudah digunakan, akurat, dan membantu perencanaan serta mitigasi bencana.</p>
+            <a href="/aplikasi" class="btn btn-light btn-lg shadow-sm"><i class="bi bi-play-circle"></i> Mulai Prediksi</a>
+        </div>
+    </section>
+    <!-- Fitur & Manfaat -->
+    <section class="container py-5">
+        <h2 class="text-center mb-5 fw-semibold">Fitur & Manfaat</h2>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4">
+                <div class="card fitur-card p-4 text-center h-100">
+                    <div class="fitur-icon"><i class="bi bi-geo-alt"></i></div>
+                    <h5 class="fw-bold">Prediksi Magnitude</h5>
+                    <p>Prediksi kategori magnitude gempa (kecil, sedang, besar) berdasarkan lokasi dan kedalaman gempa.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card fitur-card p-4 text-center h-100">
+                    <div class="fitur-icon"><i class="bi bi-shield-check"></i></div>
+                    <h5 class="fw-bold">Mendukung Mitigasi</h5>
+                    <p>Membantu perencanaan tanggap darurat dan mitigasi risiko bencana gempa bumi.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card fitur-card p-4 text-center h-100">
+                    <div class="fitur-icon"><i class="bi bi-bar-chart-line"></i></div>
+                    <h5 class="fw-bold">Analisis Data</h5>
+                    <p>Analisis performa model dan fitur penting untuk pengembangan sistem prediksi yang lebih baik.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Cara Menggunakan Aplikasi -->
+    <section class="container py-5">
+        <h2 class="text-center mb-5 fw-semibold">Cara Menggunakan Aplikasi</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <ol class="fs-5 fw-medium">
+                    <li>Klik tombol <b>Mulai Prediksi</b> di atas atau menu <b>Aplikasi</b> di navbar.</li>
+                    <li>Masukkan <b>latitude</b>, <b>longitude</b>, dan <b>depth</b> gempa yang ingin diprediksi kategorinya.</li>
+                    <li>Klik tombol <b>Prediksi Magnitude</b> dan lihat hasilnya.</li>
+                    <li>Lihat grafik analisis performa model pada menu <b>Analisis</b>.</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
