@@ -28,6 +28,7 @@
                                 <i class="bi bi-graph-up"></i> Lihat Analisis Model
                             </a>
                         </div>
+                        
                         <!-- Form Input Numerik -->
                         <form id="predictForm">
                             <div class="mb-3">
@@ -66,8 +67,47 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Error Alert -->
-                        <div class="alert alert-danger mt-4" id="errorAlert" style="display:none;"></div>
+                       
+                        <h3 class="mt-5" style="font-weight:bold;">Statistik Jumlah Gempa</h3>
+                        <div class="row mt-5">
+                          <div class="col-md-6 mb-4">
+                            <div class="card">
+                              <div class="card-body">
+                                <h4 class="card-title">Cek Jumlah Gempa</h4>
+                                <form method="POST" action="/aplikasi" class="mb-3">
+                                  <div class="mb-3">
+                                    <label for="tahun_bulanan" class="form-label">Tahun:</label>
+                                    <input type="number" class="form-control" id="tahun_bulanan" name="tahun_bulanan" min="2000" max="2100" required>
+                                  </div>
+                                  <div class="mb-3">
+                                    <label for="bulan_bulanan" class="form-label">Bulan:</label>
+                                    <select class="form-control" id="bulan_bulanan" name="bulan_bulanan" required>
+                                      <option value="">--Pilih Bulan--</option>
+                                      <option value="1">Januari</option>
+                                      <option value="2">Februari</option>
+                                      <option value="3">Maret</option>
+                                      <option value="4">April</option>
+                                      <option value="5">Mei</option>
+                                      <option value="6">Juni</option>
+                                      <option value="7">Juli</option>
+                                      <option value="8">Agustus</option>
+                                      <option value="9">September</option>
+                                      <option value="10">Oktober</option>
+                                      <option value="11">November</option>
+                                      <option value="12">Desember</option>
+                                    </select>
+                                  </div>
+                                  <button type="submit" name="cek" value="bulanan" class="btn btn-primary">Cek Jumlah Gempa Bulanan</button>
+                                </form>
+                                {% if jumlah_gempa_bulanan is not none %}
+                                  <div class="alert alert-info">
+                                    <b>Jumlah gempa pada tahun {{ tahun_bulanan }}, bulan {{ bulan_bulanan }}:</b> <span style="color: #007bff; font-weight: bold;">{{ jumlah_gempa_bulanan }}</span> kali
+                                  </div>
+                                {% endif %}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                     </div>
                 </div>
             </div>

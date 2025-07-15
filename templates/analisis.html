@@ -30,10 +30,12 @@
 </head>
 <body>
     <div class="container py-5">
-        {% if mae is not none and rmse is not none %}
-        <div class="alert alert-info text-center my-4">
-            <b>MAE:</b> {{ mae|round(4) }} &nbsp; | &nbsp; <b>RMSE:</b> {{ rmse|round(4) }}
-        </div>
+        
+        {% if mae_tahun is not none and rmse_tahun is not none and mae_bulan is not none and rmse_bulan is not none %}
+          <div class="alert alert-info">
+            <b>MAE Tahunan:</b> {{ mae_tahun|round(2) }} &nbsp; | &nbsp; <b>RMSE Tahunan:</b> {{ rmse_tahun|round(2) }}<br>
+            <b>MAE Bulanan:</b> {{ mae_bulan|round(2) }} &nbsp; | &nbsp; <b>RMSE Bulanan:</b> {{ rmse_bulan|round(2) }}
+          </div>
         {% endif %}
         <div class="back-button">
             <a href="/" class="btn btn-outline-primary">

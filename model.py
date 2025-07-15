@@ -65,3 +65,43 @@ fig_fi.write_html('static/plots/feature_importance.html', auto_open=False)
 joblib.dump(model, 'model.joblib')
 joblib.dump(scaler, 'scaler.joblib')
 print("\nModel dan scaler berhasil disimpan.")
+
+# --- MODEL TAHUNAN ---
+# Hitung jumlah gempa per tahun
+print("\nTraining model jumlah gempa tahunan...")
+df['date'] = pd.to_datetime(df['date'])
+df['tahun'] = df['date'].dt.year
+df['bulan'] = df['date'].dt.month
+df_tahun = df.groupby('tahun').size().reset_index(name='jumlah_gempa')
+X_tahun = df_tahun[['tahun']]
+y_tahun = df_tahun['jumlah_gempa']
+X_train_tahun, X_test_tahun, y_train_tahun, y_test_tahun = train_test_split(X_tahun, y_tahun, test_size=0.2, random_state=42)
+model_tahun = RandomForestRegressor(n_estimators=100, random_state=42)
+model_tahun.fit(X_train_tahun, y_train_tahun)
+y_pred_tahun = model_tahun.predict(X_test_tahun)
+mae_tahun = mean_absolute_error(y_test_tahun, y_pred_tahun)
+rmse_tahun = np.sqrt(mean_squared_error(y_test_tahun, y_pred_tahun))
+print("MAE Tahunan:", mae_tahun)
+print("RMSE Tahunan:", rmse_tahun)
+joblib.dump(model_tahun, 'model_jumlah_gempa_tahunan.joblib')
+
+# --- MODEL BULANAN ---
+print("\nTraining model jumlah gempa bulanan...")
+df_bulan = df.groupby(['tahun', 'bulan']).size().reset_index(name='jumlah_gempa')
+X_bulan = df_bulan[['tahun', 'bulan']]
+y_bulan = df_bulan['jumlah_gempa']
+X_train_bulan, X_test_bulan, y_train_bulan, y_test_bulan = train_test_split(X_bulan, y_bulan, test_size=0.2, random_state=42)
+model_bulan = RandomForestRegressor(n_estimators=100, random_state=42)
+model_bulan.fit(X_train_bulan, y_train_bulan)
+y_pred_bulan = model_bulan.predict(X_test_bulan)
+mae_bulan = mean_absolute_error(y_test_bulan, y_pred_bulan)
+rmse_bulan = np.sqrt(mean_squared_error(y_test_bulan, y_pred_bulan))
+print("MAE Bulanan:", mae_bulan)
+print("RMSE Bulanan:", rmse_bulan)
+joblib.dump(model_bulan, 'model_jumlah_gempa_bulanan.joblib')
+
+print("\nModel tahunan dan bulanan berhasil disimpan.")
+# Setelah training model tahunan dan bulanan
+with open('metrics_jumlah_gempa.txt', 'w') as f:
+    f.write(f"{mae_tahun}\n{rmse_tahun}\n{mae_bulan}\n{rmse_bulan}\n")
+print("\nMAE & RMSE model tahunan dan bulanan berhasil disimpan ke metrics_jumlah_gempa.txt")
