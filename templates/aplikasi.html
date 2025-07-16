@@ -67,7 +67,7 @@
                                     Bulan {{ bulan }} Tahun {{ tahun }}
                                 {% endif %}
                             </b><br>
-                            <span style="font-size:1.5em">{{ hasil_prediksi|round(2) }}</span>
+                            <span style="font-size:1.5em">{{ hasil_prediksi|int }}</span>
                         </div>
                         {% if grafik_prediksi_path %}
                         <iframe src="{{ url_for('static', filename=grafik_prediksi_path) }}" style="width:100%;max-width:900px;height:500px;display:block;margin:auto;border:none;border-radius:10px;box-shadow:0 5px 15px rgba(0,0,0,0.1);" class="mt-3"></iframe>
