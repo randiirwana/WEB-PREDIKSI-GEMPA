@@ -105,3 +105,23 @@ print("\nModel tahunan dan bulanan berhasil disimpan.")
 with open('metrics_jumlah_gempa.txt', 'w') as f:
     f.write(f"{mae_tahun}\n{rmse_tahun}\n{mae_bulan}\n{rmse_bulan}\n")
 print("\nMAE & RMSE model tahunan dan bulanan berhasil disimpan ke metrics_jumlah_gempa.txt")
+
+# --- GRAFIK TAHUNAN ---
+# Data asli tahunan
+fig_tahun = go.Figure()
+fig_tahun.add_trace(go.Bar(x=df_tahun['tahun'], y=df_tahun['jumlah_gempa'], name='Data Asli', marker_color='royalblue'))
+# Prediksi model (training set)
+y_pred_train_tahun = model_tahun.predict(X_tahun)
+fig_tahun.add_trace(go.Bar(x=df_tahun['tahun'], y=y_pred_train_tahun, name='Prediksi Model', marker_color='orange'))
+fig_tahun.update_layout(title='Jumlah Gempa per Tahun', xaxis_title='Tahun', yaxis_title='Jumlah Gempa', barmode='group')
+fig_tahun.write_html('static/plots/grafik_tahunan.html', auto_open=False)
+
+# --- GRAFIK BULANAN ---
+# Data asli bulanan
+label_bulan = df_bulan['tahun'].astype(str) + '-' + df_bulan['bulan'].astype(str).str.zfill(2)
+fig_bulan = go.Figure()
+fig_bulan.add_trace(go.Bar(x=label_bulan, y=df_bulan['jumlah_gempa'], name='Data Asli', marker_color='royalblue'))
+y_pred_train_bulan = model_bulan.predict(X_bulan)
+fig_bulan.add_trace(go.Bar(x=label_bulan, y=y_pred_train_bulan, name='Prediksi Model', marker_color='orange'))
+fig_bulan.update_layout(title='Jumlah Gempa per Bulan', xaxis_title='Tahun-Bulan', yaxis_title='Jumlah Gempa', barmode='group', xaxis_tickangle=-45)
+fig_bulan.write_html('static/plots/grafik_bulanan.html', auto_open=False)

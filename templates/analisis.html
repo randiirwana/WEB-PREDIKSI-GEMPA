@@ -43,40 +43,48 @@
             </a>
         </div>
         
-        <h1 class="text-center mb-5">Analisis Model Klasifikasi Magnitude Gempa</h1>
-        
-        <div class="row">
-            <!-- Confusion Matrix -->
-            <div class="col-md-6">
-                <div class="card analysis-card">
-                    <div class="card-body">
-                        <h5 class="card-title">Confusion Matrix</h5>
-                        <p class="card-text text-muted">
-                            Confusion Matrix menunjukkan performa model dalam mengklasifikasikan kategori magnitude gempa (<b>kecil</b>, <b>sedang</b>, <b>besar</b>). Semakin gelap warnanya, semakin tinggi jumlah prediksi pada kategori tersebut.
-                        </p>
-                        <iframe src="{{ url_for('static', filename='plots/confusion_matrix.html') }}" 
-                                class="analysis-iframe"></iframe>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Feature Importance -->
-            <div class="col-md-6">
-                <div class="card analysis-card">
-                    <div class="card-body">
-                        <h5 class="card-title">Fitur Terpenting</h5>
-                        <p class="card-text text-muted">
-                            Grafik ini menunjukkan tingkat kepentingan fitur numerik (<b>latitude</b>, <b>longitude</b>, <b>depth</b>) dalam pengambilan keputusan model klasifikasi magnitude gempa. Semakin panjang bar, semakin penting fitur tersebut.
-                        </p>
-                        <iframe src="{{ url_for('static', filename='plots/feature_importance.html') }}" 
-                                class="analysis-iframe"></iframe>
-                    </div>
-                </div>
+        <h1 class="text-center mb-5">Analisis Model Prediksi Jumlah Gempa</h1>
+
+        <!-- Grafik Tahunan -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Grafik Jumlah Gempa per Tahun</h5>
+                <p class="card-text text-muted">
+                    Grafik ini menampilkan jumlah gempa per tahun berdasarkan data asli dan hasil prediksi model Random Forest.
+                </p>
+                <iframe src="{{ url_for('static', filename='plots/grafik_tahunan.html') }}" class="analysis-iframe"></iframe>
             </div>
         </div>
+        <!-- END Grafik Tahunan -->
+
+        <!-- Grafik Bulanan -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Grafik Jumlah Gempa per Bulan</h5>
+                <p class="card-text text-muted">
+                    Grafik ini menampilkan jumlah gempa per bulan berdasarkan data asli dan hasil prediksi model Random Forest.
+                </p>
+                <iframe src="{{ url_for('static', filename='plots/grafik_bulanan.html') }}" class="analysis-iframe"></iframe>
+            </div>
+        </div>
+        <!-- END Grafik Bulanan -->
     </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleBulan() {
+            var mode = document.getElementById('mode_prediksi').value;
+            var bulanGroup = document.getElementById('bulan-group');
+            if (mode === 'bulanan') {
+                bulanGroup.style.display = 'block';
+            } else {
+                bulanGroup.style.display = 'none';
+                document.getElementById('bulan').value = '';
+            }
+        }
+        // Panggil saat halaman load untuk set tampilan awal
+        window.onload = function() { toggleBulan(); };
+    </script>
 </body>
 </html> 

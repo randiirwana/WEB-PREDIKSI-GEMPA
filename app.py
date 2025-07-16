@@ -20,12 +20,51 @@ def home():
 def analisis():
     tahun = request.form.get('tahun')
     bulan = request.form.get('bulan')
+    mode_prediksi = request.form.get('mode_prediksi')
+    hasil_prediksi = None
+    grafik_prediksi_path = None
+
     df = pd.read_csv('data.csv')
+    if 'date' in df.columns:
+        df['date'] = pd.to_datetime(df['date'], errors='coerce')
+        df = df.dropna(subset=['date'])
+        df['tahun'] = df['date'].dt.year
+        df['bulan'] = df['date'].dt.month
+
     if tahun:
         df = df[df['tahun'] == int(tahun)]
     if bulan:
         df = df[df['bulan'] == int(bulan)]
     jumlah_gempa = len(df)
+
+    # Proses prediksi jika ada input form
+    if request.method == 'POST' and mode_prediksi:
+        import plotly.graph_objects as go
+        import joblib
+        import numpy as np
+        os.makedirs('static/plots', exist_ok=True)
+        if mode_prediksi == 'tahunan' and tahun:
+            model_tahun = joblib.load('model_jumlah_gempa_tahunan.joblib')
+            X_pred = np.array([[int(tahun)]])
+            hasil_prediksi = model_tahun.predict(X_pred)[0]
+            # Buat grafik bar chart hasil prediksi
+            fig = go.Figure([go.Bar(x=[str(tahun)], y=[hasil_prediksi], marker_color='royalblue')])
+            fig.update_layout(title=f'Prediksi Jumlah Gempa Tahun {tahun}', xaxis_title='Tahun', yaxis_title='Jumlah Gempa')
+            grafik_prediksi_path = f'static/plots/prediksi_tahun_{tahun}.html'
+            fig.write_html(grafik_prediksi_path, auto_open=False)
+            grafik_prediksi_path = grafik_prediksi_path.replace('static/', '')
+        elif mode_prediksi == 'bulanan' and tahun and bulan:
+            model_bulan = joblib.load('model_jumlah_gempa_bulanan.joblib')
+            X_pred = np.array([[int(tahun), int(bulan)]])
+            hasil_prediksi = model_bulan.predict(X_pred)[0]
+            # Buat grafik bar chart hasil prediksi
+            label_bulan = f'{tahun}-{bulan.zfill(2)}'
+            fig = go.Figure([go.Bar(x=[label_bulan], y=[hasil_prediksi], marker_color='orange')])
+            fig.update_layout(title=f'Prediksi Jumlah Gempa Bulan {label_bulan}', xaxis_title='Tahun-Bulan', yaxis_title='Jumlah Gempa')
+            grafik_prediksi_path = f'static/plots/prediksi_bulan_{tahun}_{bulan}.html'
+            fig.write_html(grafik_prediksi_path, auto_open=False)
+            grafik_prediksi_path = grafik_prediksi_path.replace('static/', '')
+
     mae_tahun, rmse_tahun, mae_bulan, rmse_bulan = read_metrics_jumlah_gempa()
     return render_template(
         'analisis.html',
@@ -35,7 +74,10 @@ def analisis():
         mae_tahun=mae_tahun,
         rmse_tahun=rmse_tahun,
         mae_bulan=mae_bulan,
-        rmse_bulan=rmse_bulan
+        rmse_bulan=rmse_bulan,
+        hasil_prediksi=hasil_prediksi,
+        grafik_prediksi_path=grafik_prediksi_path,
+        mode_prediksi=mode_prediksi
     )
 
 # Tambahkan fungsi untuk membaca hasil MAE dan RMSE dari file metrics_jumlah_gempa.txt dan kirim ke aplikasi.html
@@ -54,45 +96,48 @@ def read_metrics_jumlah_gempa():
 
 @app.route('/aplikasi', methods=['GET', 'POST'])
 def aplikasi():
-    jumlah_gempa_tahunan = None
-    tahun_tahunan = None
-    jumlah_gempa_bulanan = None
-    tahun_bulanan = None
-    bulan_bulanan = None
+    mode_prediksi = None
+    tahun = None
+    bulan = None
+    hasil_prediksi = None
+    grafik_prediksi_path = None
 
     if request.method == 'POST':
-        import pandas as pd
-        df = pd.read_csv('data.csv')
-        df['date'] = pd.to_datetime(df['date'], errors='coerce')
-        df = df.dropna(subset=['date'])
-        df['tahun'] = df['date'].dt.year
-        df['bulan'] = df['date'].dt.month
-
-        if request.form.get('cek') == 'tahunan':
-            tahun_tahunan = request.form.get('tahun_tahunan')
-            if tahun_tahunan:
-                jumlah_gempa_tahunan = len(df[df['tahun'] == int(tahun_tahunan)])
-        elif request.form.get('cek') == 'bulanan':
-            tahun_bulanan = request.form.get('tahun_bulanan')
-            bulan_bulanan = request.form.get('bulan_bulanan')
-            if tahun_bulanan and bulan_bulanan:
-                jumlah_gempa_bulanan = len(
-                    df[(df['tahun'] == int(tahun_bulanan)) & (df['bulan'] == int(bulan_bulanan))]
-                )
-
-    mae_tahun, rmse_tahun, mae_bulan, rmse_bulan = read_metrics_jumlah_gempa()
+        mode_prediksi = request.form.get('mode_prediksi')
+        tahun = request.form.get('tahun')
+        bulan = request.form.get('bulan')
+        import plotly.graph_objects as go
+        import joblib
+        import numpy as np
+        import os
+        os.makedirs('static/plots', exist_ok=True)
+        if mode_prediksi == 'tahunan' and tahun:
+            model_tahun = joblib.load('model_jumlah_gempa_tahunan.joblib')
+            X_pred = np.array([[int(tahun)]])
+            hasil_prediksi = model_tahun.predict(X_pred)[0]
+            fig = go.Figure([go.Bar(x=[str(tahun)], y=[hasil_prediksi], marker_color='royalblue')])
+            fig.update_layout(title=f'Prediksi Jumlah Gempa Tahun {tahun}', xaxis_title='Tahun', yaxis_title='Jumlah Gempa')
+            grafik_prediksi_path = f'static/plots/prediksi_tahun_aplikasi_{tahun}.html'
+            fig.write_html(grafik_prediksi_path, auto_open=False)
+            grafik_prediksi_path = grafik_prediksi_path.replace('static/', '')
+        elif mode_prediksi == 'bulanan' and tahun and bulan:
+            model_bulan = joblib.load('model_jumlah_gempa_bulanan.joblib')
+            X_pred = np.array([[int(tahun), int(bulan)]])
+            hasil_prediksi = model_bulan.predict(X_pred)[0]
+            label_bulan = f'{tahun}-{str(bulan).zfill(2)}'
+            fig = go.Figure([go.Bar(x=[label_bulan], y=[hasil_prediksi], marker_color='orange')])
+            fig.update_layout(title=f'Prediksi Jumlah Gempa Bulan {label_bulan}', xaxis_title='Tahun-Bulan', yaxis_title='Jumlah Gempa')
+            grafik_prediksi_path = f'static/plots/prediksi_bulan_aplikasi_{tahun}_{bulan}.html'
+            fig.write_html(grafik_prediksi_path, auto_open=False)
+            grafik_prediksi_path = grafik_prediksi_path.replace('static/', '')
 
     return render_template(
         'aplikasi.html',
-        jumlah_gempa_tahunan=jumlah_gempa_tahunan,
-        tahun_tahunan=tahun_tahunan,
-        jumlah_gempa_bulanan=jumlah_gempa_bulanan,
-        tahun_bulanan=tahun_bulanan,
-        bulan_bulanan=bulan_bulanan,
-        mae_tahun=mae_tahun,
-        rmse_tahun=rmse_tahun,
-        mae_bulan=mae_bulan,
-        rmse_bulan=rmse_bulan
+        mode_prediksi=mode_prediksi,
+        tahun=tahun,
+        bulan=bulan,
+        hasil_prediksi=hasil_prediksi,
+        grafik_prediksi_path=grafik_prediksi_path
     )
 
 @app.route('/predict', methods=['POST'])
